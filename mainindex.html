@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For Rodi ❤️</title>
+  <!-- Retro Pixel Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       1. GLOBAL & PIXEL ART THEME STYLES
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      image-rendering: pixelated;
+    }
+
+    body {
+      background: #090314;
+      color: #ffffff;
+      font-family: 'Press Start 2P', monospace;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Starry Background */
+    #stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .pixel-star {
+      position: absolute;
+      background: #ffffff;
+      width: 4px;
+      height: 4px;
+      box-shadow: 2px 2px 0px rgba(255,255,255,0.2);
+      animation: pixelTwinkle var(--duration) infinite steps(2);
+    }
+
+    @keyframes pixelTwinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    /* Pixel Moon SVG Container */
+    .pixel-moon {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      width: 110px;
+      height: 110px;
+      z-index: 1;
+      filter: drop-shadow(0 0 10px rgba(160, 130, 255, 0.4));
+    }
+
+    /* Shooting Star Canvas */
+    #shooting-star-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ==========================================================================
+       2. SCENE CONTAINER & DIALOGUE BOXES
+       ========================================================================== */
+    .scene-container {
+      position: relative;
+      z-index: 2;
+      max-width: 620px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .scene {
+      display: none;
+      opacity: 0;
+      background: #140b28;
+      border: 4px solid #a873e8;
+      box-shadow: 0 0 0 4px #090314, 0 0 0 8px #603a98, 8px 8px 0px #000000;
+      padding: 30px 20px;
+      transition: opacity 0.8s ease;
+    }
+
+    .scene.active {
+      display: block;
+    }
+
+    .scene.fade-in {
+      opacity: 1;
+    }
+
+    p {
+      font-size: 0.8rem;
+      line-height: 2.2;
+      color: #e0d5f5;
+      margin-bottom: 20px;
+    }
+
+    p.highlight {
+      color: #ff75ab;
+      text-shadow: 2px 2px 0px #80123f;
+    }
+
+    /* Photo Gallery */
+    .photo-gallery {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .photo-card {
+      width: 140px;
+      height: 170px;
+      object-fit: cover;
+      border: 4px solid #ffffff;
+      box-shadow: 4px 4px 0px #000;
+    }
+
+    /* Pixel Buttons */
+    .pixel-btn {
+      margin-top: 15px;
+      background: #ff5388;
+      color: #ffffff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      padding: 14px 20px;
+      border: 4px solid #ffffff;
+      box-shadow: 0 4px 0 #9e1b43, 0 6px 0 #000;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.1s ease;
+    }
+
+    .pixel-btn:hover {
+      background: #ff75ab;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #9e1b43, 0 8px 0 #000;
+    }
+
+    .pixel-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 0px 0 #9e1b43, 0 2px 0 #000;
+    }
+
+    #final-message {
+      display: none;
+      font-size: 1rem;
+      color: #ff75ab;
+      margin-top: 25px;
+      line-height: 1.8;
+      text-shadow: 2px 2px 0px #000;
+    }
+  </style>
+</head>
+<body>
+  <audio id="bg-music" src="music.mp3" loop preload="auto"></audio>
+  <!-- Pixelated Crescent Moon SVG -->
+  <svg class="pixel-moon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Outer Glow / Background pixel cluster -->
+    <path d="M6 1H10V2H12V4H13V6H14V10H13V12H12V14H10V15H6V14H4V12H3V10H2V6H3V4H4V2H6V1Z" fill="#321a5a" />
+    <path d="M6 2H9V3H11V5H12V7H13V9H12V11H11V13H9V14H6V13H8V11H9V9H10V7H9V5H8V3H6V2Z" fill="#4d2b8c" />
+    <!-- Pixel Moon Body -->
+    <path d="M5 2H8V3H6V4H5V6H4V10H5V12H6V13H8V14H5V13H3V11H2V5H3V3H5V2Z" fill="#e2d5ff" />
+    <path d="M6 3H8V4H7V5H6V6H5V10H6V11H7V12H8V13H6V12H4V10H3V6H4V4H6V3Z" fill="#ffffff" />
+  </svg>
+
+  <div id="stars-container"></div>
+  <canvas id="shooting-star-canvas"></canvas>
+
+  <div class="scene-container">
+    
+    <!-- SCENE 1: Intro -->
+    <div class="scene active" id="scene-1">
+      <p class="highlight" style="font-size: 1.1rem;">Hey, Rodi...</p>
+      <p>I built this quiet space for you.</p>
+      <button class="pixel-btn" onclick="startExperience()">CONTINUE ✨</button>
+    </div>
+
+    <!-- SCENE 2 -->
+    <div class="scene" id="scene-2">
+      <p>I've rewritten these words so many times...</p>
+      <p>Because I wanted to find the perfect apology.</p>
+      <p>But I realized...</p>
+      <p class="highlight">There isn't one.</p>
+      <button class="pixel-btn" onclick="nextScene()">NEXT ▶</button>
+    </div>
+
+    <!-- SCENE 3 -->
+    <div class="scene" id="scene-3">
+      <p>I didnt wish you on Girlfriend's Day.</p>
+      <p>And I know it wasn't just about a date.</p>
+      <p>It became a reminder of something much bigger.</p>
+      <p>Two years... yet I never gave you the feeling of being proudly shown to the world.</p>
+      <p>Looking back, I understand why that hurt.</p>
+      <button class="pixel-btn" onclick="nextScene()">NEXT ▶</button>
+    </div>
+
+    <!-- SCENE 4 -->
+    <div class="scene" id="scene-4">
+      <p>You deserve to feel celebrated.</p>
+      <p>You deserve to feel chosen.</p>
+      <p class="highlight">You deserve to feel loved loudly... not quietly.</p>
+      <button class="pixel-btn" onclick="nextScene()">NEXT ▶</button>
+    </div>
+
+    <!-- SCENE 5: Photos -->
+    <div class="scene" id="scene-5">
+      <p class="highlight">Silly pictures of Us...</p>
+      <div class="photo-gallery">
+        <img class="photo-card" src="photo1.jpg" alt="Memory 1">
+        <img class="photo-card" src="photo2.jpg" alt="Memory 2">
+        <img class="photo-card" src="photo3.jpg" alt="Memory 3">
+      </div>
+      <button class="pixel-btn" onclick="nextScene()">NEXT ▶</button>
+    </div>
+
+    <!-- SCENE 6: Final Screen -->
+    <div class="scene" id="scene-6">
+      <p>I can't promise I'll never make mistakes.</p>
+      <p>But I can promise...</p>
+      <p>I'll keep trying to become someone who deserves your love.</p>
+      <p class="highlight" style="font-size: 0.9rem; margin-top: 15px;">I love you, Rodi.</p>
+      
+      <button class="pixel-btn" id="forgive-btn">Click this if u wanna see stars 🌠</button>
+      <div id="final-message">MWAHHHHHHH.</div>
+    </div>
+
+  </div>
+
+  <script>
+    function startExperience() {
+  const audio = document.getElementById('bg-music');
+  
+  // Set volume to 30% (0.3). You can lower it more (e.g., 0.2) or raise it (e.g., 0.4)
+  audio.volume = 0.3; 
+  
+  audio.play().catch(e => console.log("Audio play blocked:", e));
+  nextScene();
+}
+    /* ==========================================================================
+       1. PIXEL BACKGROUND STARS
+       ========================================================================== */
+    const starsContainer = document.getElementById('stars-container');
+    for (let i = 0; i < 90; i++) {
+      const star = document.createElement('div');
+      star.className = 'pixel-star';
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.setProperty('--duration', `${Math.random() * 2 + 1}s`);
+      starsContainer.appendChild(star);
+    }
+
+    /* ==========================================================================
+       2. SCENE TRANSITION LOGIC
+       ========================================================================== */
+    let currentScene = 1;
+    const totalScenes = 6;
+
+    window.onload = () => {
+      const firstScene = document.getElementById('scene-1');
+      setTimeout(() => firstScene.classList.add('fade-in'), 100);
+    };
+
+    function nextScene() {
+      const activeScene = document.getElementById(`scene-${currentScene}`);
+      activeScene.classList.remove('fade-in');
+
+      setTimeout(() => {
+        activeScene.classList.remove('active');
+        currentScene++;
+
+        if (currentScene <= totalScenes) {
+          const nextSceneElem = document.getElementById(`scene-${currentScene}`);
+          nextSceneElem.classList.add('active');
+          setTimeout(() => {
+            nextSceneElem.classList.add('fade-in');
+          }, 50);
+        }
+      }, 800);
+    }
+
+    /* ==========================================================================
+       3. FAST SHOOTING STAR STORM (OPTIMIZED CANVAS)
+       ========================================================================== */
+    const canvas = document.getElementById('shooting-star-canvas');
+    const ctx = canvas.getContext('2d');
+    let shootingStars = [];
+    let isStormActive = false;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class ShootingStar {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width * 1.5 - canvas.width * 0.2;
+        this.y = -20;
+        this.length = Math.random() * 80 + 40;
+        this.speed = Math.random() * 12 + 14; // Fast speed
+        this.size = Math.random() * 2 + 2;
+        this.color = Math.random() > 0.3 ? '#ffffff' : '#c8a2ff';
+      }
+
+      draw() {
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = this.size;
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x - this.length * 0.7, this.y + this.length * 0.7);
+        ctx.stroke();
+      }
+
+      update() {
+        this.x -= this.speed * 0.7;
+        this.y += this.speed * 0.7;
+
+        if (this.y > canvas.height || this.x < -100) {
+          this.reset();
+        }
+      }
+    }
+
+    function animateShootingStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      shootingStars.forEach(star => {
+        star.update();
+        star.draw();
+      });
+
+      if (isStormActive) {
+        requestAnimationFrame(animateShootingStars);
+      }
+    }
+
+    // Trigger meteor shower on final button click
+    const forgiveBtn = document.getElementById('forgive-btn');
+    const finalMessage = document.getElementById('final-message');
+
+    forgiveBtn.addEventListener('click', () => {
+      // Spawn 45 fast-moving shooting stars
+      for (let i = 0; i < 45; i++) {
+        const star = new ShootingStar();
+        // Stagger spawn positions vertically
+        star.y = Math.random() * canvas.height;
+        star.x = Math.random() * canvas.width;
+        shootingStars.push(star);
+      }
+
+      isStormActive = true;
+      animateShootingStars();
+
+      forgiveBtn.style.display = 'none';
+      finalMessage.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
